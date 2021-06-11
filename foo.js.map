@@ -1,0 +1,7 @@
+{
+    "version" : 3,
+    "file": "foo.js",
+    "sources": ["foo.js"],
+    "names": [],
+    "mappings": "AAAA,yBACE,sBAEE,QAGI,sBAIE,aAKK,wBAOI"
+}

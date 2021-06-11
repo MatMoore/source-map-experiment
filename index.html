@@ -1,0 +1,78 @@
+<html>
+    <head><title>Source map experiment</title></head>
+    <body>
+        <h1>Source code</h1>
+        <pre>
+            function generateBugs() {
+                const random = Math.random();
+                if (random < 0.3) {
+                  undefined.someMethod();
+                } else if (random < 0.6) {
+                  throw "this is an error";
+                } else {
+                  console.log(sdffsf + fsdfssdfsf);
+                }
+              }              
+        </pre>
+
+        <h1>Minified</h1>
+        <pre>
+            function generateBugs(){const s=Math.random();if(s<.3)(void 0).someMethod();else{if(s<.6)throw"this is an error";console.log(sdffsf+fsdfssdfsf)}}
+        </pre>
+
+        <h1>Source map</h1>
+        <pre>
+
+        </pre>
+
+        <h1>Demo</h1>
+
+        <button onClick="generateBugs()">
+            Generate bugs
+        </button>
+
+        <h1>Mapping segments</h1>
+        <p>From <a href="http://sourcemaps.info/spec.html">Source Map Revision 3 Proposal</a></p>
+
+        <blockquote>
+            Each segment is made up of 1,4 or 5 variable length fields.
+        </blockquote>
+
+        <p>So it seems like these are the valid formats:</p>
+        <ul>
+            <li>{Column offset}</li>
+            <li>{Column offset}{Source index}{Line number}{Column number}</li>
+            <li>{Column offset}{Source index}{Line number}{Column number}{Name}</li>
+        </ul>
+
+        <p>The first format seems to be used to indicate that a segment was not present in the original file.</p>
+
+        <h2>Column offset field</h2>
+        <blockquote>The zero-based starting column of the line in the generated code that the segment represents. If this is the first field of the first segment, or the first segment following a new generated line (“;”), then this field holds the whole base 64 VLQ. Otherwise, this field contains a base 64 VLQ that is relative to the previous occurrence of this field. Note that this is different than the fields below because the previous value is reset after every generated line.</blockquote>
+        <p>So basically this is the number of characters between this and the last segement. The segement at the start of a line is relative to the start of the line.</p>
+
+        <h2>Source index field</h2>
+        <blockquote>If present, an zero-based index into the “sources” list. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented.</blockquote>
+        <p>Not needed if the sourcemap is for a single source</p>
+
+        <h2>Line number field</h2>
+        <blockquote>If present, the zero-based starting line in the original source represented. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented. Always present if there is a source field.</blockquote>
+
+        <h2>Column number field</h2>
+        <blockquote>If present, the zero-based starting column of the line in the source represented. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented. Always present if there is a source field.</blockquote>
+
+        <h2>Name field</h2>
+        <blockquote>If present, the zero-based index into the “names” list associated with this segment. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented.</blockquote>
+
+        <p><a href="https://groups.google.com/g/mozilla.dev.js-sourcemap/c/m-xiXTeVvEc">You need this if you want to deobfuscate stack traces</a></p>
+
+        <h1>See also</h1>
+        <ul>
+        <li><a href="https://www.murzwin.com/base64vlq.html">BASE64 VLQ CODEC (COder/DECoder) AND SOURCEMAP V3 MAPPINGS PARSER</a></li>
+        <li><a href="https://groups.google.com/g/mozilla.dev.js-sourcemap">mozilla.dev.js-sourcemap</a></li>
+        <li><a href="https://sokra.github.io/source-map-visualization/">source-map-visualization</a></li>
+        <li><a href="https://gist.github.com/lydell/a391bc1d01b2bfd52004">Source map Simple format proposal</a></li>
+        </ul>
+    </body>
+    <script src="foo.min.js"></script>
+</html>
